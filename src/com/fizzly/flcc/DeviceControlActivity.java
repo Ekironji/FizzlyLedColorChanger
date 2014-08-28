@@ -19,8 +19,10 @@ package com.fizzly.flcc;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
@@ -38,8 +40,6 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
-
-import com.fizzly.fizzlyledcolorchanger.R;
 
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
@@ -59,13 +59,20 @@ public class DeviceControlActivity extends Activity {
     private String mDeviceAddress;
     private ExpandableListView mGattServicesList;
     private BluetoothLeService mBluetoothLeService;
+    private BluetoothGatt mBtGatt;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
-    private boolean mConnected = false;
+    private boolean mConnected = false;    
     private BluetoothGattCharacteristic mNotifyCharacteristic;
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
+    
+    //-----------------------------
+    final byte CHANGE_COLOR = 0x00;
+    final byte BLINK 		= 0x01;
+    UUID rgb_service = UUID.fromString(SampleGattAttributes.RGB_SERVICE_UUID);
+    UUID rgb_enable  = UUID.fromString(SampleGattAttributes.RGB_COMMAND_UUID);
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -101,6 +108,10 @@ public class DeviceControlActivity extends Activity {
                 mConnected = true;
                 updateConnectionState(R.string.connected);
                 invalidateOptionsMenu();
+                mBtGatt = mBluetoothLeService.getBtGatt();
+                BluetoothGattService rgbServ = mBtGatt.getService(rgb_service);
+                BluetoothGattCharacteristic rgbChar = rgbServ.getCharacteristic(rgb_enable);
+                mBluetoothLeService.writeCharacteristic(rgbChar, true);
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 updateConnectionState(R.string.disconnected);
@@ -174,6 +185,8 @@ public class DeviceControlActivity extends Activity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        
+        
     }
 
     @Override
@@ -183,6 +196,7 @@ public class DeviceControlActivity extends Activity {
         if (mBluetoothLeService != null) {
             final boolean result = mBluetoothLeService.connect(mDeviceAddress);
             Log.d(TAG, "Connect request result=" + result);
+            mBtGatt = mBluetoothLeService.getBtGatt();
         }
     }
 
@@ -311,20 +325,55 @@ public class DeviceControlActivity extends Activity {
     
     
     public void onOffClick(View v){
+    	mBtGatt = mBluetoothLeService.getBtGatt();
+        BluetoothGattService rgbServ = mBtGatt.getService(rgb_service);
+        BluetoothGattCharacteristic rgbChar = rgbServ.getCharacteristic(rgb_enable);
         
+        mBluetoothLeService.writeCharacteristic(rgbChar, createRGBMessage(CHANGE_COLOR,
+        		0x00, 0x00, 0x00, 100, 0x00));
     }
     
     public void onRedClick(View v){
-    	
+        mBtGatt = mBluetoothLeService.getBtGatt();
+        BluetoothGattService rgbServ = mBtGatt.getService(rgb_service);
+        BluetoothGattCharacteristic rgbChar = rgbServ.getCharacteristic(rgb_enable);
+        
+        mBluetoothLeService.writeCharacteristic(rgbChar, createRGBMessage(CHANGE_COLOR,
+        		0xff, 0x00, 0x00, 100, 0x00));
     }
     
     public void onGreenClick(View v){
     	
+        mBtGatt = mBluetoothLeService.getBtGatt();
+        BluetoothGattService rgbServ = mBtGatt.getService(rgb_service);
+        BluetoothGattCharacteristic rgbChar = rgbServ.getCharacteristic(rgb_enable);
+        
+        mBluetoothLeService.writeCharacteristic(rgbChar, createRGBMessage(CHANGE_COLOR,
+        		0x00, 0xff, 0x00, 100, 0x00));
     }
     
     public void onBlueClick(View v){
-    	
+        mBtGatt = mBluetoothLeService.getBtGatt();
+        BluetoothGattService rgbServ = mBtGatt.getService(rgb_service);
+        BluetoothGattCharacteristic rgbChar = rgbServ.getCharacteristic(rgb_enable);
+        
+        mBluetoothLeService.writeCharacteristic(rgbChar, createRGBMessage(CHANGE_COLOR,
+        		0x00, 0x00, 0xff, 100, 0x00));
     }
+    
+    byte[] createRGBMessage(byte cmd, int red, int green, int blue, int time, int blink) {
+    	byte[] msg = new byte[6];
+    	
+    	msg[0] = cmd;
+    	msg[1] = (byte)red;
+    	msg[2] = (byte)green;
+    	msg[3] = (byte)blue;
+    	msg[4] = (byte)time;
+    	msg[5] = (byte)blink;
+    	    			
+    	return msg;
+    }
+    
     
     
     

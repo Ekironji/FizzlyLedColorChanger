@@ -26,6 +26,7 @@ public class SampleGattAttributes {
     public static String HEART_RATE_MEASUREMENT       = "00002a37-0000-1000-8000-00805f9b34fb";
     public static String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
 
+    public static String RGB_SERVICE_UUID		= "f000aa50-0451-4000-cb00-5ec0a1d1cb00";
     public static String RGB_ENABLER_UUID       = "f000aa51-0451-4000-cb00-5ec0a1d1cb00";
     public static String RGB_DATA_UUID          = "f000aa52-0451-4000-cb00-5ec0a1d1cb00";
     public static String RGB_COMMAND_UUID       = "f000aa53-0451-4000-cb00-5ec0a1d1cb00";
@@ -39,11 +40,11 @@ public class SampleGattAttributes {
         attributes.put("00002a29-0000-1000-8000-00805f9b34fb", "Manufacturer Name String");
         
         // Fizzly
+        attributes.put(RGB_SERVICE_UUID, "RGB service");
         attributes.put(RGB_ENABLER_UUID, "RGB enabler service");
         attributes.put(RGB_DATA_UUID,    "RGB values");
         attributes.put(RGB_COMMAND_UUID, "RGB command");
-        
-        
+                
     }
 
     public static String lookup(String uuid, String defaultName) {

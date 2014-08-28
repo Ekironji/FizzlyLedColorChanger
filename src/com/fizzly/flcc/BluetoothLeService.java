@@ -304,6 +304,28 @@ public class BluetoothLeService extends Service {
             mBluetoothGatt.writeDescriptor(descriptor);
         }
     }
+    
+    public boolean writeCharacteristic(BluetoothGattCharacteristic characteristic, byte[] b) {
+      	if (!checkGatt())
+      		return false;
+//        byte[] val = new byte[1];
+//        val[0] = b;
+        characteristic.setValue(b);
+
+        return mBluetoothGatt.writeCharacteristic(characteristic);
+    }
+    
+    public boolean writeCharacteristic(BluetoothGattCharacteristic characteristic, boolean b) {
+      	if (!checkGatt())
+      		return false;
+
+        byte[] val = new byte[1];
+
+        val[0] = (byte) (b ? 1 : 0);
+        characteristic.setValue(val);
+//        mBusy = true;
+        return mBluetoothGatt.writeCharacteristic(characteristic);
+    }
 
     /**
      * Retrieves a list of supported GATT services on the connected device. This should be
@@ -315,5 +337,27 @@ public class BluetoothLeService extends Service {
         if (mBluetoothGatt == null) return null;
 
         return mBluetoothGatt.getServices();
+    }
+    
+    private boolean checkGatt() {
+        if (mBluetoothAdapter == null) {
+          Log.w(TAG, "BluetoothAdapter not initialized");
+          return false;
+        }
+        if (mBluetoothGatt == null) {
+          Log.w(TAG, "BluetoothGatt not initialized");
+          return false;
+        }
+        	
+//        if (mBusy) {
+//          Log.w(TAG, "LeService busy");
+//          return false;
+//        }
+    		return true;
+    	
+    }
+    
+    public BluetoothGatt getBtGatt() {
+        return mBluetoothGatt;
     }
 }
