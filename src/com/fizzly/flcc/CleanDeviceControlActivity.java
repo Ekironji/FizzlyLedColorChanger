@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import com.fizzly.flcc.device.FizzlyDevice;
-
 import android.app.Activity;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -43,14 +41,17 @@ import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
+import com.fizzly.flcc.R;
+import com.fizzly.flcc.device.FizzlyDevice;
+
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
  * and display GATT services and characteristics supported by the device.  The Activity
  * communicates with {@code BluetoothLeService}, which in turn interacts with the
  * Bluetooth LE API.
  */
-public class DeviceControlActivity extends Activity {
-    private final static String TAG = DeviceControlActivity.class.getSimpleName();
+public class CleanDeviceControlActivity extends Activity {
+    private final static String TAG = CleanDeviceControlActivity.class.getSimpleName();
 
     public static final String EXTRAS_DEVICE_NAME    = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
@@ -59,7 +60,6 @@ public class DeviceControlActivity extends Activity {
     private TextView mDataField;
     private String mDeviceName;
     private String mDeviceAddress;
-    private ExpandableListView mGattServicesList;
     private BluetoothLeService mBluetoothLeService;
     private BluetoothGatt mBtGatt;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
@@ -73,12 +73,10 @@ public class DeviceControlActivity extends Activity {
     //-----------------------------
     final byte CHANGE_COLOR = 0x00;
     final byte BLINK 		= 0x01;
-    UUID rgb_service = UUID.fromString(SampleGattAttributes.RGB_SERVICE_UUID);
-    UUID rgb_enable  = UUID.fromString(SampleGattAttributes.RGB_COMMAND_UUID);
+    
 
-    FizzlyDevice mFizzlyDevice = null;
-    
-    
+	private FizzlyDevice mFizzlyDevice;
+
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -112,13 +110,12 @@ public class DeviceControlActivity extends Activity {
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
                 updateConnectionState(R.string.connected);
+
+                mDataField.setText("mBluetoothLeService is null: " + (mBluetoothLeService == null));
+
+                mFizzlyDevice = new FizzlyDevice(mBluetoothLeService);                            
                 invalidateOptionsMenu();
                 
-                // tentativo abilitazione servizio RGB
-//                mBtGatt = mBluetoothLeService.getBtGatt();
-//                BluetoothGattService rgbServ = mBtGatt.getService(rgb_service);
-//                BluetoothGattCharacteristic rgbChar = rgbServ.getCharacteristic(rgb_enable);
-//                mBluetoothLeService.writeCharacteristic(rgbChar, true);
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 updateConnectionState(R.string.disconnected);
@@ -126,56 +123,23 @@ public class DeviceControlActivity extends Activity {
                 clearUI();
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
-                displayGattServices(mBluetoothLeService.getSupportedGattServices());
+                // displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
             }
         }
     };
 
-    // If a given GATT characteristic is selected, check for supported features.  This sample
-    // demonstrates 'Read' and 'Notify' features.  See
-    // http://d.android.com/reference/android/bluetooth/BluetoothGatt.html for the complete
-    // list of supported characteristic features.
-    private final ExpandableListView.OnChildClickListener servicesListClickListner =
-            new ExpandableListView.OnChildClickListener() {
-                @Override
-                public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
-                                            int childPosition, long id) {
-                    if (mGattCharacteristics != null) {
-                        final BluetoothGattCharacteristic characteristic =
-                                mGattCharacteristics.get(groupPosition).get(childPosition);
-                        final int charaProp = characteristic.getProperties();
-                        if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
-                            // If there is an active notification on a characteristic, clear
-                            // it first so it doesn't update the data field on the user interface.
-                            if (mNotifyCharacteristic != null) {
-                                mBluetoothLeService.setCharacteristicNotification(
-                                        mNotifyCharacteristic, false);
-                                mNotifyCharacteristic = null;
-                            }
-                            mBluetoothLeService.readCharacteristic(characteristic);
-                        }
-                        if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                            mNotifyCharacteristic = characteristic;
-                            mBluetoothLeService.setCharacteristicNotification(
-                                    characteristic, true);
-                        }
-                        return true;
-                    }
-                    return false;
-                }
-    };
+	
 
     private void clearUI() {
-        mGattServicesList.setAdapter((SimpleExpandableListAdapter) null);
         mDataField.setText(R.string.no_data);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.gatt_services_characteristics);
+        setContentView(R.layout.test_activity);
 
         final Intent intent = getIntent();
         mDeviceName    = intent.getStringExtra(EXTRAS_DEVICE_NAME);
@@ -183,8 +147,6 @@ public class DeviceControlActivity extends Activity {
 
         // Sets up UI references.
         ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
-        mGattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
-        mGattServicesList.setOnChildClickListener(servicesListClickListner);
         mConnectionState  = (TextView) findViewById(R.id.connection_state);
         mDataField        = (TextView) findViewById(R.id.data_value);
 
@@ -200,12 +162,12 @@ public class DeviceControlActivity extends Activity {
     protected void onResume() {
         super.onResume();
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+        mDataField.setText("tippete");
         if (mBluetoothLeService != null) {
             final boolean result = mBluetoothLeService.connect(mDeviceAddress);
-            Log.d(TAG, "Connect request result=" + result);
-            mBtGatt = mBluetoothLeService.getBtGatt();
+            Log.w(TAG, "Connect request result=" + result);
+            mBtGatt = mBluetoothLeService.getBtGatt();        
             
-            mFizzlyDevice = new FizzlyDevice(mBluetoothLeService);
         }
     }
 
@@ -266,62 +228,7 @@ public class DeviceControlActivity extends Activity {
         }
     }
 
-    // Demonstrates how to iterate through the supported GATT Services/Characteristics.
-    // In this sample, we populate the data structure that is bound to the ExpandableListView
-    // on the UI.
-    private void displayGattServices(List<BluetoothGattService> gattServices) {
-        if (gattServices == null) return;
-        String uuid = null;
-        String unknownServiceString = getResources().getString(R.string.unknown_service);
-        String unknownCharaString   = getResources().getString(R.string.unknown_characteristic);
-        ArrayList<HashMap<String, String>> gattServiceData = new ArrayList<HashMap<String, String>>();
-        ArrayList<ArrayList<HashMap<String, String>>> gattCharacteristicData
-                = new ArrayList<ArrayList<HashMap<String, String>>>();
-        mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
 
-        // Loops through available GATT Services.
-        for (BluetoothGattService gattService : gattServices) {
-            HashMap<String, String> currentServiceData = new HashMap<String, String>();
-            uuid = gattService.getUuid().toString();
-            currentServiceData.put(
-                    LIST_NAME, SampleGattAttributes.lookup(uuid, unknownServiceString));
-            currentServiceData.put(LIST_UUID, uuid);
-            gattServiceData.add(currentServiceData);
-
-            ArrayList<HashMap<String, String>> gattCharacteristicGroupData =
-                    new ArrayList<HashMap<String, String>>();
-            List<BluetoothGattCharacteristic> gattCharacteristics =
-                    gattService.getCharacteristics();
-            ArrayList<BluetoothGattCharacteristic> charas =
-                    new ArrayList<BluetoothGattCharacteristic>();
-
-            // Loops through available Characteristics.
-            for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
-                charas.add(gattCharacteristic);
-                HashMap<String, String> currentCharaData = new HashMap<String, String>();
-                uuid = gattCharacteristic.getUuid().toString();
-                currentCharaData.put(
-                        LIST_NAME, SampleGattAttributes.lookup(uuid, unknownCharaString));
-                currentCharaData.put(LIST_UUID, uuid);
-                gattCharacteristicGroupData.add(currentCharaData);
-            }
-            mGattCharacteristics.add(charas);
-            gattCharacteristicData.add(gattCharacteristicGroupData);
-        }
-
-        SimpleExpandableListAdapter gattServiceAdapter = new SimpleExpandableListAdapter(
-                this,
-                gattServiceData,
-                android.R.layout.simple_expandable_list_item_2,
-                new String[] {LIST_NAME, LIST_UUID},
-                new int[] { android.R.id.text1, android.R.id.text2 },
-                gattCharacteristicData,
-                android.R.layout.simple_expandable_list_item_2,
-                new String[] {LIST_NAME, LIST_UUID},
-                new int[] { android.R.id.text1, android.R.id.text2 }
-        );
-        mGattServicesList.setAdapter(gattServiceAdapter);
-    }
 
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
@@ -348,7 +255,23 @@ public class DeviceControlActivity extends Activity {
     public void onBlueClick(View v){
     	mFizzlyDevice.setRgbColor(0, 0, 100, 1000);
     }
-     
+    
+
+    
+    public void on5Click(View v){	
+    	mFizzlyDevice.enableAccelerometer();   
+    }
+    
+    public void on6Click(View v){
+    	mFizzlyDevice.getAccelerationValues();   
+    }
+    
+    public void on7Click(View v){
+    }
+    
+    public void on8Click(View v){
+    }
+    
     
     
 }

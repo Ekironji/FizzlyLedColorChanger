@@ -38,8 +38,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fizzly.fizzlyledcolorchanger.R;
-
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.
  */
@@ -150,7 +148,8 @@ public class DeviceScanActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         final BluetoothDevice device = mLeDeviceListAdapter.getDevice(position);
         if (device == null) return;
-        final Intent intent = new Intent(this, DeviceControlActivity.class);
+        //final Intent intent = new Intent(this, DeviceControlActivity.class);
+        final Intent intent = new Intent(this, CleanDeviceControlActivity.class);
         intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_NAME, device.getName());
         intent.putExtra(DeviceControlActivity.EXTRAS_DEVICE_ADDRESS, device.getAddress());
         if (mScanning) {
