@@ -267,6 +267,7 @@ public class CleanDeviceControlActivity extends Activity {
     }
     
     public void on7Click(View v){
+    	mFizzlyDevice.playBeepSequence(FizzlyDevice.BEEPER_TONE_LOW, 100, 10);
     }
     
     public void on8Click(View v){

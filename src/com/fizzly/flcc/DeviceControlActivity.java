@@ -73,8 +73,8 @@ public class DeviceControlActivity extends Activity {
     //-----------------------------
     final byte CHANGE_COLOR = 0x00;
     final byte BLINK 		= 0x01;
-    UUID rgb_service = UUID.fromString(SampleGattAttributes.RGB_SERVICE_UUID);
-    UUID rgb_enable  = UUID.fromString(SampleGattAttributes.RGB_COMMAND_UUID);
+    UUID rgb_service = UUID.fromString(FizzlyGattAttributes.RGB_SERVICE_UUID);
+    UUID rgb_enable  = UUID.fromString(FizzlyGattAttributes.RGB_COMMAND_UUID);
 
     FizzlyDevice mFizzlyDevice = null;
     
@@ -113,19 +113,12 @@ public class DeviceControlActivity extends Activity {
                 mConnected = true;
                 updateConnectionState(R.string.connected);
                 invalidateOptionsMenu();
-                
-                // tentativo abilitazione servizio RGB
-//                mBtGatt = mBluetoothLeService.getBtGatt();
-//                BluetoothGattService rgbServ = mBtGatt.getService(rgb_service);
-//                BluetoothGattCharacteristic rgbChar = rgbServ.getCharacteristic(rgb_enable);
-//                mBluetoothLeService.writeCharacteristic(rgbChar, true);
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 updateConnectionState(R.string.disconnected);
                 invalidateOptionsMenu();
                 clearUI();
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                // Show all the supported services and characteristics on the user interface.
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
@@ -284,7 +277,7 @@ public class DeviceControlActivity extends Activity {
             HashMap<String, String> currentServiceData = new HashMap<String, String>();
             uuid = gattService.getUuid().toString();
             currentServiceData.put(
-                    LIST_NAME, SampleGattAttributes.lookup(uuid, unknownServiceString));
+                    LIST_NAME, FizzlyGattAttributes.lookup(uuid, unknownServiceString));
             currentServiceData.put(LIST_UUID, uuid);
             gattServiceData.add(currentServiceData);
 
@@ -301,7 +294,7 @@ public class DeviceControlActivity extends Activity {
                 HashMap<String, String> currentCharaData = new HashMap<String, String>();
                 uuid = gattCharacteristic.getUuid().toString();
                 currentCharaData.put(
-                        LIST_NAME, SampleGattAttributes.lookup(uuid, unknownCharaString));
+                        LIST_NAME, FizzlyGattAttributes.lookup(uuid, unknownCharaString));
                 currentCharaData.put(LIST_UUID, uuid);
                 gattCharacteristicGroupData.add(currentCharaData);
             }

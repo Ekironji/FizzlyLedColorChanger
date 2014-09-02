@@ -21,7 +21,7 @@ import java.util.HashMap;
 /**
  * This class includes a small subset of standard GATT attributes for demonstration purposes.
  */
-public class SampleGattAttributes {
+public class FizzlyGattAttributes {
     private static HashMap<String, String> attributes = new HashMap();
     public static String HEART_RATE_MEASUREMENT       = "00002a37-0000-1000-8000-00805f9b34fb";
     public static String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
@@ -38,14 +38,12 @@ public class SampleGattAttributes {
     public static String RGB_DATA_UUID          = "f000aa52-0451-4000-cb00-5ec0a1d1cb00";
     public static String RGB_COMMAND_UUID       = "f000aa53-0451-4000-cb00-5ec0a1d1cb00";
     
+    public static String BEEPER_SERVICE_UUID	= "f000aa60-0451-4000-cb00-5ec0a1d1cb00";
+    public static String BEEPER_ENABLER_UUID    = "f000aa61-0451-4000-cb00-5ec0a1d1cb00";
+    public static String BEEPER_DATA_UUID       = "f000aa62-0451-4000-cb00-5ec0a1d1cb00";
+    public static String BEEPER_COMMAND_UUID    = "f000aa63-0451-4000-cb00-5ec0a1d1cb00";
+    
     static {
-        // Sample Services.
-        attributes.put("0000180d-0000-1000-8000-00805f9b34fb", "Heart Rate Service");
-        attributes.put("0000180a-0000-1000-8000-00805f9b34fb", "Device Information Service");
-        // Sample Characteristics.
-        attributes.put( HEART_RATE_MEASUREMENT               , "Heart Rate Measurement");
-        attributes.put("00002a29-0000-1000-8000-00805f9b34fb", "Manufacturer Name String");
-        
         // Fizzly
         
         // Accelerometer
@@ -68,6 +66,10 @@ public class SampleGattAttributes {
         attributes.put(RGB_COMMAND_UUID, "RGB command");
         
         // Beeper
+        attributes.put(BEEPER_SERVICE_UUID, "beeper service");
+        attributes.put(BEEPER_ENABLER_UUID, "beeper enabler service");
+        attributes.put(BEEPER_DATA_UUID,    "beeper values");
+        attributes.put(BEEPER_COMMAND_UUID, "beeper command");
         
         // Touch key
   
