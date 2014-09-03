@@ -17,14 +17,10 @@
 package com.fizzly.flcc;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -37,11 +33,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ExpandableListView;
-import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
-import com.fizzly.flcc.R;
 import com.fizzly.flcc.device.FizzlyDevice;
 
 /**
@@ -60,7 +53,7 @@ public class CleanDeviceControlActivity extends Activity {
     private TextView mDataField;
     private String mDeviceName;
     private String mDeviceAddress;
-    private BluetoothLeService mBluetoothLeService;
+    private FizzlyBleService mBluetoothLeService;
     private BluetoothGatt mBtGatt;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
@@ -82,7 +75,7 @@ public class CleanDeviceControlActivity extends Activity {
 
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
-            mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
+            mBluetoothLeService = ((FizzlyBleService.LocalBinder) service).getService();
             if (!mBluetoothLeService.initialize()) {
                 Log.e(TAG, "Unable to initialize Bluetooth");
                 finish();
@@ -107,7 +100,7 @@ public class CleanDeviceControlActivity extends Activity {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
+            if (FizzlyBleService.ACTION_GATT_CONNECTED.equals(action)) {
                 mConnected = true;
                 updateConnectionState(R.string.connected);
 
@@ -116,19 +109,31 @@ public class CleanDeviceControlActivity extends Activity {
                 mFizzlyDevice = new FizzlyDevice(mBluetoothLeService);                            
                 invalidateOptionsMenu();
                 
-            } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
+            } else if (FizzlyBleService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 mConnected = false;
                 updateConnectionState(R.string.disconnected);
                 invalidateOptionsMenu();
                 clearUI();
-            } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
+                
+            } else if (FizzlyBleService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 // Show all the supported services and characteristics on the user interface.
                 // displayGattServices(mBluetoothLeService.getSupportedGattServices());
-            } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+            	
+            } else if (FizzlyBleService.ACTION_DATA_AVAILABLE.equals(action)) {
+            	// da qui arrivano i dati dal BLEService quando arrivano 
+            	
+            	Log.i("CleanDeviceControllAcivity"," BroadcastReciever ACTION_DATA_AVAILABLE called");
+            	
+                displayData(intent.getStringExtra(FizzlyBleService.EXTRA_DATA));
             }
         }
     };
+    
+    // metodo richiamato dal Broadcast reciever quando riceve una notifica
+    // 
+	private void onCharacteristicChanged(String uuidStr, byte[] value) {
+		
+	}
 
 	
 
@@ -139,7 +144,7 @@ public class CleanDeviceControlActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test_activity);
+        setContentView(R.layout.test_activity_2);
 
         final Intent intent = getIntent();
         mDeviceName    = intent.getStringExtra(EXTRAS_DEVICE_NAME);
@@ -152,7 +157,7 @@ public class CleanDeviceControlActivity extends Activity {
 
         getActionBar().setTitle(mDeviceName);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
+        Intent gattServiceIntent = new Intent(this, FizzlyBleService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
         
         
@@ -232,10 +237,10 @@ public class CleanDeviceControlActivity extends Activity {
 
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
-        intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
-        intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
+        intentFilter.addAction(FizzlyBleService.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(FizzlyBleService.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(FizzlyBleService.ACTION_GATT_SERVICES_DISCOVERED);
+        intentFilter.addAction(FizzlyBleService.ACTION_DATA_AVAILABLE);
         return intentFilter;
     }
     
@@ -259,19 +264,96 @@ public class CleanDeviceControlActivity extends Activity {
 
     
     public void on5Click(View v){	
-    	mFizzlyDevice.enableAccelerometer();   
+    	mFizzlyDevice.enableBeeper();
     }
     
     public void on6Click(View v){
-    	mFizzlyDevice.getAccelerationValues();   
+    	mFizzlyDevice.playBeepSequence(FizzlyDevice.BEEPER_TONE_LOW, 100, 5); 
     }
     
     public void on7Click(View v){
-    	mFizzlyDevice.playBeepSequence(FizzlyDevice.BEEPER_TONE_LOW, 100, 10);
+    	mFizzlyDevice.playBeepSequence(FizzlyDevice.BEEPER_TONE_HIGH, 100, 5);
     }
     
     public void on8Click(View v){
+    	mFizzlyDevice.playBeepSequence(FizzlyDevice.BEEPER_TONE_LOW, 100, 5);
     }
+    
+    
+    
+    
+    public void onRgb1(View v){
+    	mFizzlyDevice.setRgbColor(0, 0, 0, 1000);
+    }
+    
+    public void onRgb2(View v){
+    	mFizzlyDevice.setRgbColor(111, 0, 0, 1000);
+    	
+    }
+    
+    public void onRgb3(View v){
+    	mFizzlyDevice.setRgbColor(0, 111, 0, 1000);
+    	
+    }
+    
+    public void onRgb4(View v){
+    	mFizzlyDevice.setRgbColor(0, 0, 111, 1000);
+    	
+    }
+    
+    public void onRgb5(View v){
+    	mFizzlyDevice.playBeepSequence(FizzlyDevice.BEEPER_TONE_LOW, 100, 5);
+    	mFizzlyDevice.setRgbBlinkColor(111, 0, 0, 100, 5);
+    }
+    
+    
+
+    
+    public void onBeeper1(View v){
+    	mFizzlyDevice.enableBeeper();
+    }
+    
+    public void onBeeper2(View v){
+    }
+    
+    public void onBeeper3(View v){
+    }
+    
+    public void onBeeper4(View v){
+    	mFizzlyDevice.playBeepSequence(FizzlyDevice.BEEPER_TONE_LOW, 100, 5); 
+    }
+    
+    public void onBeeper5(View v){
+    	mFizzlyDevice.playBeepSequence(FizzlyDevice.BEEPER_TONE_HIGH, 100, 5);
+    }
+    
+
+    
+    public void onAcc1(View v){
+    	mFizzlyDevice.enableAccelerometer();
+    }
+    
+    public void onAcc2(View v){
+    	mFizzlyDevice.setAccelerometerPeriod(100);
+    	
+    }
+    
+    public void onAcc3(View v){
+    	mFizzlyDevice.getAcceleration();
+    }
+    
+    public void onAcc4(View v){
+    	mFizzlyDevice.enableAccelerationNotification();
+    }
+    
+    public void onAcc5(View v){
+    	
+    }
+    
+
+    
+    
+    
     
     
     

@@ -41,11 +41,14 @@ public final class R {
         public static final int device_address=0x7f080004;
         public static final int device_name=0x7f080008;
         public static final int gatt_services_list=0x7f080007;
-        public static final int menu_connect=0x7f08000e;
-        public static final int menu_disconnect=0x7f08000f;
-        public static final int menu_refresh=0x7f08000d;
-        public static final int menu_scan=0x7f080010;
-        public static final int menu_stop=0x7f080011;
+        public static final int menu_connect=0x7f080011;
+        public static final int menu_disconnect=0x7f080012;
+        public static final int menu_refresh=0x7f080010;
+        public static final int menu_scan=0x7f080013;
+        public static final int menu_stop=0x7f080014;
+        public static final int textView1=0x7f08000d;
+        public static final int textView2=0x7f08000e;
+        public static final int textView3=0x7f08000f;
     }
     public static final class layout {
         public static final int actionbar_indeterminate_progress=0x7f030000;
@@ -53,6 +56,7 @@ public final class R {
         public static final int gatt_services_characteristics=0x7f030002;
         public static final int listitem_device=0x7f030003;
         public static final int test_activity=0x7f030004;
+        public static final int test_activity_2=0x7f030005;
     }
     public static final class menu {
         public static final int gatt_services=0x7f070000;

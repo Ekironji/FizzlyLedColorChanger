@@ -31,7 +31,7 @@
 	        </activity>
 	        <activity android:name="com.fizzly.flcc.DeviceControlActivity"/>
 	        <activity android:name="com.fizzly.flcc.CleanDeviceControlActivity"/>
-	        <service android:name="com.fizzly.flcc.BluetoothLeService" android:enabled="true"/>
+	        <service  android:name="com.fizzly.flcc.FizzlyBleService" android:enabled="true"/>
     </application>
 
 </manifest>

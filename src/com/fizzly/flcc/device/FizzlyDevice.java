@@ -7,7 +7,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.util.Log;
 
-import com.fizzly.flcc.BluetoothLeService;
+import com.fizzly.flcc.FizzlyBleService;
 import com.fizzly.flcc.FizzlyGattAttributes;
 
 public class FizzlyDevice {
@@ -22,7 +22,7 @@ public class FizzlyDevice {
     final byte CHANGE_COLOR = 0x00;
     final byte BLINK 		= 0x01;
 	
-    private BluetoothLeService mBluetoothLeService;
+    private FizzlyBleService mBluetoothLeService;
     private BluetoothGatt mBtGatt;
     
     // BLE services
@@ -31,18 +31,20 @@ public class FizzlyDevice {
     BluetoothGattService beeperFizzlyService;
     
   
-    UUID UIDD_RGB_SERVICE  = UUID.fromString(FizzlyGattAttributes.RGB_SERVICE_UUID); 
-    UUID UIDD_RGB_COMMAND  = UUID.fromString(FizzlyGattAttributes.RGB_COMMAND_UUID);
+    UUID UIDD_RGB_SERVICE     = UUID.fromString(FizzlyGattAttributes.RGB_SERVICE_UUID); 
+    UUID UIDD_RGB_COMMAND     = UUID.fromString(FizzlyGattAttributes.RGB_COMMAND_UUID);
        
     UUID UIDD_BEEPER_SERVICE  = UUID.fromString(FizzlyGattAttributes.BEEPER_SERVICE_UUID); 
+    UUID UIDD_BEEPER_ENABLER  = UUID.fromString(FizzlyGattAttributes.BEEPER_ENABLER_UUID);  
     UUID UIDD_BEEPER_COMMAND  = UUID.fromString(FizzlyGattAttributes.BEEPER_COMMAND_UUID);
     
-    UUID UIDD_ACC_SERVICE = UUID.fromString(FizzlyGattAttributes.ACC_SERVICE_UUID);  
-    UUID UIDD_ACC_ENABLER = UUID.fromString(FizzlyGattAttributes.ACC_ENABLER_UUID);  
-    UUID UIDD_ACC_DATA    = UUID.fromString(FizzlyGattAttributes.ACC_DATA_UUID);  
+    UUID UIDD_ACC_SERVICE     = UUID.fromString(FizzlyGattAttributes.ACC_SERVICE_UUID);  
+    UUID UIDD_ACC_ENABLER     = UUID.fromString(FizzlyGattAttributes.ACC_ENABLER_UUID);  
+    UUID UIDD_ACC_DATA        = UUID.fromString(FizzlyGattAttributes.ACC_DATA_UUID);   
+    UUID UIDD_ACC_PERIOD      = UUID.fromString(FizzlyGattAttributes.ACC_PERIOD_UUID);  
 	
     
-	public FizzlyDevice(BluetoothLeService mBluetoothLeService){
+	public FizzlyDevice(FizzlyBleService mBluetoothLeService){
 		this.mBluetoothLeService = mBluetoothLeService;
 		
 		mBtGatt = mBluetoothLeService.getBtGatt();		
@@ -52,7 +54,11 @@ public class FizzlyDevice {
 		accFizzlyService = mBtGatt.getService(UIDD_ACC_SERVICE);
 	}
 	
-	
+	/**
+	 * RGB Led
+	 * 
+	 * 
+	 */	
 	public void setRgbColor(int red, int green, int blue, int millisecTime){
         BluetoothGattCharacteristic rgbCharacteristic = rgbFizzlyService.getCharacteristic(UIDD_RGB_COMMAND);
         
@@ -84,7 +90,17 @@ public class FizzlyDevice {
 	}
 	
 	
-	// beeper
+	/**
+	 * Beeper
+	 * 
+	 */	
+	public void enableBeeper(){
+		// abilito il servizio
+		BluetoothGattCharacteristic beeperCharacteristic = beeperFizzlyService.getCharacteristic(UIDD_BEEPER_ENABLER);		
+		mBluetoothLeService.writeCharacteristic(beeperCharacteristic, true);
+	}
+	
+	
 	public void turnOnBeeper(int tone){
 		BluetoothGattCharacteristic beeperCharacteristic = beeperFizzlyService.getCharacteristic(UIDD_BEEPER_COMMAND);		
 		
@@ -111,7 +127,10 @@ public class FizzlyDevice {
         mBluetoothLeService.writeCharacteristic(beeperCharacteristic, msg);
 	}
 	
+	
+	
 	public void playBeepSequence(int tone, int millisPeriod, int beepNumber){
+		// abilito il servizio
 		BluetoothGattCharacteristic beeperCharacteristic = beeperFizzlyService.getCharacteristic(UIDD_BEEPER_COMMAND);		
 		
 		if(tone != BEEPER_TONE_LOW && tone != BEEPER_TONE_HIGH){		
@@ -129,7 +148,7 @@ public class FizzlyDevice {
 			return;
 		}	
 		
-		byte[] msg = {(byte)BEEPER_ON_OFF_MODE, (byte)tone, (byte)(millisPeriod*10), (byte)(beepNumber) };	
+		byte[] msg = {(byte)BEEPER_BLINK_MODE, (byte)tone, (byte)(millisPeriod/10), (byte)(beepNumber) };	
 		
 		Log.i("", "is charat null: " + (beeperCharacteristic == null));
 		Log.i("", "is msg null: " + (msg == null));
@@ -138,14 +157,27 @@ public class FizzlyDevice {
 	}
 	
 	
+	/**
+	 * Accelorometer
+	 * 
+	 */
 	public void enableAccelerometer(){
 		BluetoothGattCharacteristic accCharacteristic = accFizzlyService.getCharacteristic(UIDD_ACC_ENABLER);
-		byte[] msg = {0x01};
+		mBluetoothLeService.writeCharacteristic(accCharacteristic, true);
+	}
+	
+	public void setAccelerometerPeriod(int millis){
+		BluetoothGattCharacteristic accCharacteristic = accFizzlyService.getCharacteristic(UIDD_ACC_PERIOD);
+		byte[] msg = {(byte ) millis};
 		mBluetoothLeService.writeCharacteristic(accCharacteristic, msg);
 	}
 	
-	// lettura dati accellerometro
-	public void getAccelerationValues(){
+	public void enableAccelerationNotification(){
+		BluetoothGattCharacteristic accCharacteristic = accFizzlyService.getCharacteristic(UIDD_ACC_DATA);		
+		mBluetoothLeService.setCharacteristicNotification(accCharacteristic, true);
+	}
+	
+	public void getAcceleration(){
 		BluetoothGattCharacteristic accCharacteristic = accFizzlyService.getCharacteristic(UIDD_ACC_DATA);		
 		mBluetoothLeService.readCharacteristic(accCharacteristic);
 	}
