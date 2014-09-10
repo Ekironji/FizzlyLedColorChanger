@@ -21,22 +21,25 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.fizzly.flcc.device.FizzlyDevice;
+import com.fizzly.flcc.effectsthread.Blink;
+import com.fizzly.flcc.effectsthread.FadeBlink;
 import com.fizzly.flcc.effectsthread.Rainbow;
 
 /**
@@ -45,8 +48,8 @@ import com.fizzly.flcc.effectsthread.Rainbow;
  * communicates with {@code BluetoothLeService}, which in turn interacts with the
  * Bluetooth LE API.
  */
-public class CleanDeviceControlActivity extends Activity {
-    private final static String TAG = CleanDeviceControlActivity.class.getSimpleName();
+public class VideoDemoActivity extends Activity {
+    private final static String TAG = VideoDemoActivity.class.getSimpleName();
 
     public static final String EXTRAS_DEVICE_NAME    = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
@@ -55,6 +58,7 @@ public class CleanDeviceControlActivity extends Activity {
     private TextView mDataField;
     private String mDeviceName;
     private String mDeviceAddress;
+    
     private FizzlyBleService mBluetoothLeService;
     private BluetoothGatt mBtGatt;
     private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
@@ -67,10 +71,16 @@ public class CleanDeviceControlActivity extends Activity {
     
     //-----------------------------
     final byte CHANGE_COLOR = 0x00;
-    final byte BLINK 		= 0x01;
-    
+    final byte BLINK 		= 0x01;    
 
 	private FizzlyDevice mFizzlyDevice;
+	
+	// EditTexts
+	private EditText mRainbowEditText   = null;
+	private EditText mBlinkEditText     = null;
+	private EditText mFadeBlinkEditText = null;
+	private EditText mMultipleBlinkEditText = null;
+	
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -146,7 +156,7 @@ public class CleanDeviceControlActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test_activity_2);
+        setContentView(R.layout.test_activity_3);
 
         final Intent intent = getIntent();
         mDeviceName    = intent.getStringExtra(EXTRAS_DEVICE_NAME);
@@ -157,6 +167,11 @@ public class CleanDeviceControlActivity extends Activity {
         mConnectionState  = (TextView) findViewById(R.id.connection_state);
         mDataField        = (TextView) findViewById(R.id.data_value);
 
+        mRainbowEditText = (EditText)findViewById(R.id.rainbowEditText);
+        mBlinkEditText   = (EditText)findViewById(R.id.blinkEditText);
+        mFadeBlinkEditText = (EditText)findViewById(R.id.fadeBlinkEditText);
+        mMultipleBlinkEditText = (EditText)findViewById(R.id.multipleBlinkEditText);
+        
         getActionBar().setTitle(mDeviceName);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         Intent gattServiceIntent = new Intent(this, FizzlyBleService.class);
@@ -247,109 +262,9 @@ public class CleanDeviceControlActivity extends Activity {
     }
     
     
-    public void onOffClick(View v){
-    	mFizzlyDevice.setRgbColor(0, 0, 0, 1000);
-    }
-    
-    public void onRedClick(View v){
-    	mFizzlyDevice.setRgbColor(100, 0, 0, 1000);
-    }
-    
-    public void onGreenClick(View v){
-    	mFizzlyDevice.setRgbColor(0, 100, 0, 1000);
-    }
-    
-    public void onBlueClick(View v){
-    	mFizzlyDevice.setRgbColor(0, 0, 100, 1000);
-    }
-    
-
-    
-    public void on5Click(View v){	
-    	mFizzlyDevice.enableBeeper();
-    }
-    
-    public void on6Click(View v){
-    	mFizzlyDevice.playBeepSequence(FizzlyDevice.BEEPER_TONE_LOW, 100, 5); 
-    }
-    
-    public void on7Click(View v){
-    	mFizzlyDevice.playBeepSequence(FizzlyDevice.BEEPER_TONE_HIGH, 100, 5);
-    }
-    
-    public void on8Click(View v){
-    	mFizzlyDevice.playBeepSequence(FizzlyDevice.BEEPER_TONE_LOW, 100, 5);
-    }
     
     
-    
-    
-    public void onRgb1(View v){
-    	mFizzlyDevice.setRgbColor(0, 0, 0, 200);
-    }
-    
-    public void onRgb2(View v){
-    	mFizzlyDevice.setRgbColor(111, 0, 0, 200);
-    	
-    }
-    
-    public void onRgb3(View v){
-    	mFizzlyDevice.setRgbColor(0, 111, 0, 200);
-    	
-    }
-    
-    public void onRgb4(View v){
-    	mFizzlyDevice.setRgbColor(0, 0, 111, 200);
-    	
-    }
-    
-    public void onRgb5(View v){
-    	mFizzlyDevice.playBeepSequence(FizzlyDevice.BEEPER_TONE_LOW, 100, 5);
-    	mFizzlyDevice.setRgbBlinkColor(111, 0, 0, 100, 5);
-    }
-    
-    
-
-    
-    public void onBeeper1(View v){
-    	mFizzlyDevice.enableBeeper();
-    }
-    
-    public void onBeeper2(View v){
-    	new Rainbow(mFizzlyDevice, 3000).start();
-    }
-    
-    public void onBeeper3(View v){
-    	
-    }
-    
-    public void onBeeper4(View v){
-    	mFizzlyDevice.playBeepSequence(FizzlyDevice.BEEPER_TONE_LOW, 100, 5); 
-    }
-    
-    public void onBeeper5(View v){
-    	mFizzlyDevice.playBeepSequence(FizzlyDevice.BEEPER_TONE_HIGH, 100, 5);
-    }
-    
-
-    
-    public void onAcc1(View v){
-    	mFizzlyDevice.enableAccelerometer();
-    }
-    
-    public void onAcc2(View v){
-    	mFizzlyDevice.setAccelerometerPeriod(100);  	
-    }
-    
-    public void onAcc3(View v){
-    	mFizzlyDevice.getAcceleration();
-    }
-    
-    public void onAcc4(View v){
-    	mFizzlyDevice.enableAccelerationNotification();
-    }
-    
-    public void onAcc5(View v){    	
+    public void onCheck(View v){    	
     	if(mBluetoothLeService.getBtGatt().getServices().size() == 11){
     		mFizzlyDevice = new FizzlyDevice(mBluetoothLeService);
 
@@ -357,6 +272,74 @@ public class CleanDeviceControlActivity extends Activity {
     	} else
     		mDataField.setText("Fizzly NOT READY");
     }
+    
+    
+    public void onRainbowOff(View v){
+    	mFizzlyDevice.setRgbColor(0, 0, 0, 0);
+    }
+    
+    public void onRainbowPlay(View v){
+    	new Rainbow(mFizzlyDevice, 1000).start();
+    	
+    }
+    
+    
+    public void onRedBlink(View v){
+    	new Blink(mFizzlyDevice, Integer.parseInt(mBlinkEditText.getText().toString()), Color.RED, 1).start();
+    }
+    
+    public void onGreenBlink(View v){
+    	new Blink(mFizzlyDevice, Integer.parseInt(mBlinkEditText.getText().toString()), Color.GREEN, 1).start();
+    }
+    
+    public void onBlueBlink(View v){
+    	new Blink(mFizzlyDevice, Integer.parseInt(mBlinkEditText.getText().toString()), Color.BLUE, 1).start();    	
+    }
+    
+    public void onOtherColorBlink(View v){
+    	
+    }
+    
+    
+    
+    public void onRedFadeBlink(View v){
+    	new FadeBlink(mFizzlyDevice, Integer.parseInt(mFadeBlinkEditText.getText().toString()), Color.RED, 1).start();
+    }
+    
+    public void onGreenFadeBlink(View v){
+    	new FadeBlink(mFizzlyDevice, Integer.parseInt(mFadeBlinkEditText.getText().toString()), Color.GREEN, 1).start();
+    }
+    
+    public void onBlueFadeBlink(View v){
+    	new FadeBlink(mFizzlyDevice, Integer.parseInt(mFadeBlinkEditText.getText().toString()), Color.BLUE, 1).start();
+    }
+    
+    public void onOtherColorFadeBlink(View v){
+    }
+    
+    
+    
+    public void onRedMultipleBlink(View v){
+
+    	new Blink(mFizzlyDevice, Integer.parseInt(mMultipleBlinkEditText.getText().toString()), Color.RED, 5).start();
+    }
+    
+    public void onGreenMultipleBlink(View v){
+    	new Blink(mFizzlyDevice, Integer.parseInt(mMultipleBlinkEditText.getText().toString()), Color.GREEN, 5).start();
+    }
+    
+    public void onBlueMultipleBlink(View v){
+    	new Blink(mFizzlyDevice, Integer.parseInt(mMultipleBlinkEditText.getText().toString()), Color.YELLOW, 5).start();
+    }
+    
+    public void onOtherColorMultipleBlink(View v){
+    	
+    }
+    
+
+
+    
+
     
 
     

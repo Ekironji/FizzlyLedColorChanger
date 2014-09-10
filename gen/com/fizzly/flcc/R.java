@@ -28,6 +28,7 @@ public final class R {
         public static final int tile=0x7f020001;
     }
     public static final class id {
+        public static final int blinkEditText=0x7f080011;
         public static final int button1=0x7f080000;
         public static final int button2=0x7f080001;
         public static final int button3=0x7f080002;
@@ -40,12 +41,15 @@ public final class R {
         public static final int data_value=0x7f080006;
         public static final int device_address=0x7f080004;
         public static final int device_name=0x7f080008;
+        public static final int fadeBlinkEditText=0x7f080012;
         public static final int gatt_services_list=0x7f080007;
-        public static final int menu_connect=0x7f080011;
-        public static final int menu_disconnect=0x7f080012;
-        public static final int menu_refresh=0x7f080010;
-        public static final int menu_scan=0x7f080013;
-        public static final int menu_stop=0x7f080014;
+        public static final int menu_connect=0x7f080015;
+        public static final int menu_disconnect=0x7f080016;
+        public static final int menu_refresh=0x7f080014;
+        public static final int menu_scan=0x7f080017;
+        public static final int menu_stop=0x7f080018;
+        public static final int multipleBlinkEditText=0x7f080013;
+        public static final int rainbowEditText=0x7f080010;
         public static final int textView1=0x7f08000d;
         public static final int textView2=0x7f08000e;
         public static final int textView3=0x7f08000f;
@@ -57,6 +61,7 @@ public final class R {
         public static final int listitem_device=0x7f030003;
         public static final int test_activity=0x7f030004;
         public static final int test_activity_2=0x7f030005;
+        public static final int test_activity_3=0x7f030006;
     }
     public static final class menu {
         public static final int gatt_services=0x7f070000;

@@ -47,11 +47,15 @@ public class FizzlyDevice {
 	public FizzlyDevice(FizzlyBleService mBluetoothLeService){
 		this.mBluetoothLeService = mBluetoothLeService;
 		
-		mBtGatt = mBluetoothLeService.getBtGatt();		
+		mBtGatt = mBluetoothLeService.getBtGatt();	
 		
-		rgbFizzlyService = mBtGatt.getService(UIDD_RGB_SERVICE);
+		for(BluetoothGattService srv : mBtGatt.getServices()){
+			Log.w("", "services> " + srv.getUuid().toString());
+		}
+		
+		rgbFizzlyService    = mBtGatt.getService(UIDD_RGB_SERVICE);
 		beeperFizzlyService = mBtGatt.getService(UIDD_BEEPER_SERVICE);
-		accFizzlyService = mBtGatt.getService(UIDD_ACC_SERVICE);
+		accFizzlyService    = mBtGatt.getService(UIDD_ACC_SERVICE);
 	}
 	
 	/**
@@ -60,6 +64,9 @@ public class FizzlyDevice {
 	 * 
 	 */	
 	public void setRgbColor(int red, int green, int blue, int millisecTime){
+		
+		Log.w("FizzlyDevice setRgbColor", "(FizzlyBleService rgbFizzlyService is null: " + (rgbFizzlyService == null));
+		
         BluetoothGattCharacteristic rgbCharacteristic = rgbFizzlyService.getCharacteristic(UIDD_RGB_COMMAND);
         
         byte[] msg = new byte[6];
