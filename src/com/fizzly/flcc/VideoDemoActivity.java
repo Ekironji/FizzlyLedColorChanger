@@ -39,6 +39,7 @@ import android.widget.TextView;
 
 import com.fizzly.flcc.device.FizzlyDevice;
 import com.fizzly.flcc.effectsthread.Blink;
+import com.fizzly.flcc.effectsthread.CatchFizzly;
 import com.fizzly.flcc.effectsthread.FadeBlink;
 import com.fizzly.flcc.effectsthread.Rainbow;
 
@@ -80,6 +81,7 @@ public class VideoDemoActivity extends Activity {
 	private EditText mBlinkEditText     = null;
 	private EditText mFadeBlinkEditText = null;
 	private EditText mMultipleBlinkEditText = null;
+	private EditText mCatchEditText   = null;
 	
 
     // Code to manage Service lifecycle.
@@ -171,6 +173,7 @@ public class VideoDemoActivity extends Activity {
         mBlinkEditText   = (EditText)findViewById(R.id.blinkEditText);
         mFadeBlinkEditText = (EditText)findViewById(R.id.fadeBlinkEditText);
         mMultipleBlinkEditText = (EditText)findViewById(R.id.multipleBlinkEditText);
+        mCatchEditText = (EditText)findViewById(R.id.catchEditText);
         
         getActionBar().setTitle(mDeviceName);
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -279,8 +282,8 @@ public class VideoDemoActivity extends Activity {
     }
     
     public void onRainbowPlay(View v){
-    	new Rainbow(mFizzlyDevice, 1000).start();
-    	
+    	int millis = Integer.parseInt(mRainbowEditText.getText().toString());
+    	new Rainbow(mFizzlyDevice, millis).start();  	
     }
     
     
@@ -336,6 +339,15 @@ public class VideoDemoActivity extends Activity {
     	
     }
     
+    
+    public void onCatchOff(View v){
+    	mFizzlyDevice.setRgbColor(0, 0, 0, 0);
+    }
+    
+    public void onCatchPlay(View v){
+    	int millis = Integer.parseInt(mCatchEditText.getText().toString());
+    	new CatchFizzly(mFizzlyDevice, millis).start();  	
+    }
 
 
     
