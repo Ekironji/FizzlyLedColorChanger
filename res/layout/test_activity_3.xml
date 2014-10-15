@@ -19,19 +19,21 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp">
 
+<!--     TESTI -->
+    
     <LinearLayout android:orientation="horizontal"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content">
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:text="@string/label_device_address"
-                  android:textSize="18sp"/>
+                  android:textSize="10sp"/>
         <Space android:layout_width="5dp"
                android:layout_height="wrap_content"/>
         <TextView android:id="@+id/device_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"/>
+                android:textSize="10sp"/>
     </LinearLayout>
     
     <LinearLayout android:orientation="horizontal"
@@ -40,14 +42,14 @@
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:text="@string/label_state"
-                  android:textSize="18sp"/>
+                  android:textSize="10sp"/>
         <Space android:layout_width="5dp"
                android:layout_height="wrap_content"/>
         <TextView android:id="@+id/connection_state"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:text="@string/disconnected"
-                  android:textSize="18sp"/>
+                  android:textSize="10sp"/>
     </LinearLayout>
     <LinearLayout android:orientation="horizontal"
                   android:layout_width="match_parent"
@@ -55,16 +57,21 @@
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:text="@string/label_data"
-                  android:textSize="18sp"/>
+                  android:textSize="10sp"/>
         <Space android:layout_width="5dp"
                android:layout_height="wrap_content"/>
         <TextView android:id="@+id/data_value"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:text="@string/no_data"
-                  android:textSize="18sp"/>
+                  android:textSize="10sp"/>
     </LinearLayout>
 
+    
+    
+    
+<!--     CHECK -->
+    
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,6 +84,12 @@
         android:layout_height="wrap_content"
         android:text="Rainbow" />
 
+    
+    
+    
+    
+<!--     ARCOBALENO  -->
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" 
@@ -110,11 +123,8 @@
     </LinearLayout>
     
     
-    
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Blink" />
+<!--     COLORE DIRETTO -->
+
     
     <LinearLayout
         android:layout_width="match_parent"
@@ -124,7 +134,54 @@
         <TextView
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="Time (ms) " />
+	        android:text="color" />
+        
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="r"
+            android:onClick="onRed" />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="g"
+            android:onClick="onGreen"  />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="b" 
+            android:onClick="onBlue" />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="y"
+            android:onClick="onYellow" />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="p"
+            android:onClick="onPink"  />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="w" 
+            android:onClick="onWhite" />       
+    </LinearLayout>
+    
+    
+    
+    
+<!--     BLINK -->
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:orientation="horizontal">
+        
+        <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="blink" />
 
         <EditText
             android:id="@+id/blinkEditText"
@@ -135,28 +192,51 @@
         </EditText>
         
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="35dp"
             android:layout_height="wrap_content"
-            android:text="red"
+            android:text="r"
             android:onClick="onRedBlink" />
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="35dp"
             android:layout_height="wrap_content"
-            android:text="green"
+            android:text="g"
             android:onClick="onGreenBlink"  />
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="35dp"
             android:layout_height="wrap_content"
-            android:text="blue" 
+            android:text="b" 
             android:onClick="onBlueBlink" />
-        
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="y"
+            android:onClick="onYellowBlink" />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="p"
+            android:onClick="onPinkBlink"  />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="w" 
+            android:onClick="onWhiteBlink" />       
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="c" 
+            android:onClick="onCyanBlink" />   
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fade Blink" />
     
+    
+    
+    
+    
+    
+    
+<!--     FADE BLINK -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" 
@@ -165,7 +245,7 @@
         <TextView
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="Time (ms) " />
+	        android:text="fade" />
 
         <EditText
             android:id="@+id/fadeBlinkEditText"
@@ -176,27 +256,46 @@
         </EditText>
         
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="35dp"
             android:layout_height="wrap_content"
-            android:text="red"
+            android:text="r"
             android:onClick="onRedFadeBlink" />
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="35dp"
             android:layout_height="wrap_content"
-            android:text="green"
+            android:text="g"
             android:onClick="onGreenFadeBlink"  />
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="35dp"
             android:layout_height="wrap_content"
-            android:text="blue" 
+            android:text="b" 
             android:onClick="onBlueFadeBlink" />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="y"
+            android:onClick="onYellowFadeBlink" />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="p"
+            android:onClick="onPinkFadeBlink"  />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="w" 
+            android:onClick="onWhiteFadeBlink" />  
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="c" 
+            android:onClick="onCyanFadeBlink" />  
         
     </LinearLayout>
     
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Multiple Blinks" />
+    
+    
+<!--     MULTIPLE BLINKS -->
     
     <LinearLayout
         android:layout_width="match_parent"
@@ -206,7 +305,7 @@
         <TextView
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="Time (ms) " />
+	        android:text="multi" />
 
         <EditText
             android:id="@+id/multipleBlinkEditText"
@@ -217,34 +316,54 @@
         </EditText>
         
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="35dp"
             android:layout_height="wrap_content"
-            android:text="red"
+            android:text="r"
             android:onClick="onRedMultipleBlink" />
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="35dp"
             android:layout_height="wrap_content"
-            android:text="green"
+            android:text="g"
             android:onClick="onGreenMultipleBlink"  />
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="35dp"
             android:layout_height="wrap_content"
-            android:text="yellow" 
+            android:text="b" 
             android:onClick="onBlueMultipleBlink" />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="y"
+            android:onClick="onYellowMultipleBlink" />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="p"
+            android:onClick="onPinkMultipleBlink"  />
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="w" 
+            android:onClick="onWhiteMultipleBlink" />  
+        <Button
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:text="c" 
+            android:onClick="onCyanMultipleBlink" />  
         
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Catch" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
-
+        
+        <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Catch" />
+        
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -261,7 +380,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
-            android:text="100" />
+            android:text="50" />
 
         <Button
             android:layout_width="wrap_content"
@@ -270,4 +389,35 @@
             android:text="Play" />
     </LinearLayout>
 
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        
+        <TextView
+            android:id="@+id/soundText"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="sound: " />
+        
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onNoSound"
+            android:text="no" />
+        
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onLowTone"
+            android:text="low" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onHighTone"
+            android:text="high" />
+    </LinearLayout>
+    
 </LinearLayout>

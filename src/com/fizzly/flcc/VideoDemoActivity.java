@@ -84,6 +84,9 @@ public class VideoDemoActivity extends Activity {
 	private EditText mCatchEditText   = null;
 	
 
+    private TextView mSoundText;
+	
+
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -174,6 +177,8 @@ public class VideoDemoActivity extends Activity {
         mFadeBlinkEditText = (EditText)findViewById(R.id.fadeBlinkEditText);
         mMultipleBlinkEditText = (EditText)findViewById(R.id.multipleBlinkEditText);
         mCatchEditText = (EditText)findViewById(R.id.catchEditText);
+        
+        mSoundText = (TextView) findViewById(R.id.soundText);
         
         getActionBar().setTitle(mDeviceName);
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -287,21 +292,85 @@ public class VideoDemoActivity extends Activity {
     }
     
     
+    int sound = -1;    
+    
+    public void onNoSound(View v){
+    	sound = -1;
+    	mSoundText.setText("sound: NO");
+    }
+    
+    public void onLowTone(View v){
+    	sound = FizzlyDevice.BEEPER_TONE_LOW;
+    	mSoundText.setText("sound: LOW");
+    }
+    
+    public void onHighTone(View v){
+    	sound = FizzlyDevice.BEEPER_TONE_HIGH;
+    	mSoundText.setText("sound: HIGH");
+    }
+    
+    
+    
+    public void onRed(View v){
+    	mFizzlyDevice.setRgbColor(Color.RED);
+    }
+    
+    public void onGreen(View v){
+    	mFizzlyDevice.setRgbColor(Color.GREEN);
+    }
+    
+    public void onBlue(View v){
+    	mFizzlyDevice.setRgbColor(Color.BLUE);
+    }
+    
+    public void onYellow(View v){
+    	mFizzlyDevice.setRgbColor(Color.YELLOW);
+    }
+    
+    public void onPink(View v){
+    	mFizzlyDevice.setRgbColor(Color.MAGENTA);
+    }  
+    
+    public void onWhite(View v){
+    	mFizzlyDevice.setRgbColor(Color.WHITE);
+    }
+    
+    public void onCyan(View v){
+    	mFizzlyDevice.setRgbColor(Color.CYAN);
+    }  
+    
+    
+    
+    
+    
     public void onRedBlink(View v){
-    	new Blink(mFizzlyDevice, Integer.parseInt(mBlinkEditText.getText().toString()), Color.RED, 1).start();
+    	new Blink(mFizzlyDevice, Integer.parseInt(mBlinkEditText.getText().toString()), Color.RED, 1, sound).start();
     }
     
     public void onGreenBlink(View v){
-    	new Blink(mFizzlyDevice, Integer.parseInt(mBlinkEditText.getText().toString()), Color.GREEN, 1).start();
+    	new Blink(mFizzlyDevice, Integer.parseInt(mBlinkEditText.getText().toString()), Color.GREEN, 1, sound).start();
     }
     
     public void onBlueBlink(View v){
-    	new Blink(mFizzlyDevice, Integer.parseInt(mBlinkEditText.getText().toString()), Color.BLUE, 1).start();    	
+    	new Blink(mFizzlyDevice, Integer.parseInt(mBlinkEditText.getText().toString()), Color.BLUE, 1, sound).start();    	
     }
     
-    public void onOtherColorBlink(View v){
-    	
+    public void onYellowBlink(View v){
+    	new Blink(mFizzlyDevice, Integer.parseInt(mBlinkEditText.getText().toString()), Color.YELLOW, 1, sound).start();
     }
+    
+    public void onPinkBlink(View v){
+    	new Blink(mFizzlyDevice, Integer.parseInt(mBlinkEditText.getText().toString()), Color.MAGENTA, 1, sound).start();
+    }
+    
+    public void onWhiteBlink(View v){
+    	new Blink(mFizzlyDevice, Integer.parseInt(mBlinkEditText.getText().toString()), Color.WHITE, 1, sound).start();    	
+    }
+    
+    public void onCyanBlink(View v){
+    	new Blink(mFizzlyDevice, Integer.parseInt(mBlinkEditText.getText().toString()), Color.CYAN, 1, sound).start();    	
+    }
+
     
     
     
@@ -315,25 +384,56 @@ public class VideoDemoActivity extends Activity {
     
     public void onBlueFadeBlink(View v){
     	new FadeBlink(mFizzlyDevice, Integer.parseInt(mFadeBlinkEditText.getText().toString()), Color.BLUE, 1).start();
+    }    
+    
+    public void onYellowFadeBlink(View v){
+    	new FadeBlink(mFizzlyDevice, Integer.parseInt(mFadeBlinkEditText.getText().toString()), Color.YELLOW, 1).start();
     }
     
-    public void onOtherColorFadeBlink(View v){
+    public void onPinkFadeBlink(View v){
+    	new FadeBlink(mFizzlyDevice, Integer.parseInt(mFadeBlinkEditText.getText().toString()), Color.MAGENTA, 1).start();
     }
+    
+    public void onWhiteFadeBlink(View v){
+    	new FadeBlink(mFizzlyDevice, Integer.parseInt(mFadeBlinkEditText.getText().toString()), Color.WHITE, 1).start();
+    }
+    
+    public void onCyanFadeBlink(View v){
+    	new FadeBlink(mFizzlyDevice, Integer.parseInt(mFadeBlinkEditText.getText().toString()), Color.CYAN, 1).start();
+    }
+    
+ 
     
     
     
     public void onRedMultipleBlink(View v){
-
-    	new Blink(mFizzlyDevice, Integer.parseInt(mMultipleBlinkEditText.getText().toString()), Color.RED, 5).start();
+    	new Blink(mFizzlyDevice, Integer.parseInt(mMultipleBlinkEditText.getText().toString()), Color.RED, 5, sound).start();
     }
     
     public void onGreenMultipleBlink(View v){
-    	new Blink(mFizzlyDevice, Integer.parseInt(mMultipleBlinkEditText.getText().toString()), Color.GREEN, 5).start();
+    	new Blink(mFizzlyDevice, Integer.parseInt(mMultipleBlinkEditText.getText().toString()), Color.GREEN, 5, sound).start();
     }
     
     public void onBlueMultipleBlink(View v){
-    	new Blink(mFizzlyDevice, Integer.parseInt(mMultipleBlinkEditText.getText().toString()), Color.YELLOW, 5).start();
+    	new Blink(mFizzlyDevice, Integer.parseInt(mMultipleBlinkEditText.getText().toString()), Color.BLUE, 5, sound).start();
     }
+    
+    public void onYellowMultipleBlink(View v){
+    	new Blink(mFizzlyDevice, Integer.parseInt(mMultipleBlinkEditText.getText().toString()), Color.YELLOW, 5, sound).start();
+    }
+    
+    public void onPinkMultipleBlink(View v){
+    	new Blink(mFizzlyDevice, Integer.parseInt(mMultipleBlinkEditText.getText().toString()), Color.MAGENTA, 5, sound).start();
+    }
+    
+    public void onWhiteMultipleBlink(View v){
+    	new Blink(mFizzlyDevice, Integer.parseInt(mMultipleBlinkEditText.getText().toString()), Color.WHITE, 5, sound).start();
+    }
+    
+    public void onCyanMultipleBlink(View v){
+    	new Blink(mFizzlyDevice, Integer.parseInt(mMultipleBlinkEditText.getText().toString()), Color.CYAN, 5, sound).start();
+    }
+    
     
     public void onOtherColorMultipleBlink(View v){
     	

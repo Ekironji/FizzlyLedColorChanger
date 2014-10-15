@@ -11,14 +11,16 @@ public class Blink extends Thread{
 	private FizzlyDevice mFizzlyDevice = null;
 	private int color = 0;
 	private int number = 1;
+	private int sound = 0;
 	
-	public Blink (FizzlyDevice mFizzlyDevice, int millis, int color, int number){
+	public Blink (FizzlyDevice mFizzlyDevice, int millis, int color, int number, int sound){
 		this.millis = millis;
 		this.mFizzlyDevice = mFizzlyDevice;
 		this.color = color;
 		this.number = number;
+		this.sound = sound;
 		
-		Log.i("Blink",Color.red(color) + " " + Color.green(color) + " " + Color.blue(color) );
+		Log.i("Blink",Color.red(color) + " " + Color.green(color) + " " + Color.blue(color)  + " " + sound);
 		
 	}
 
@@ -26,6 +28,15 @@ public class Blink extends Thread{
 	public void run() {
 		super.run();
     	mFizzlyDevice.setRgbBlinkColor(Color.red(color), Color.green(color), Color.blue(color), millis, number);
+    	try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+    	
+    	if (sound >= 0 )
+    		mFizzlyDevice.playBeepSequence(sound, millis, number);
+    	
 	}
 	
 }

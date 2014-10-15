@@ -5,6 +5,7 @@ import java.util.UUID;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
+import android.graphics.Color;
 import android.util.Log;
 
 import com.fizzly.flcc.FizzlyBleService;
@@ -81,6 +82,23 @@ public class FizzlyDevice {
 	}
 	
 	
+public void setRgbColor(int color){
+		
+		Log.w("FizzlyDevice setRgbColor", "(FizzlyBleService rgbFizzlyService is null: " + (rgbFizzlyService == null));
+		
+        BluetoothGattCharacteristic rgbCharacteristic = rgbFizzlyService.getCharacteristic(UIDD_RGB_COMMAND);
+        
+        byte[] msg = new byte[6];
+        msg[0] = (byte) CHANGE_COLOR;
+        msg[1] = (byte) Color.red(color);
+    	msg[2] = (byte) Color.green(color);
+    	msg[3] = (byte) Color.blue(color);
+    	msg[4] = (byte) 0;
+    	msg[5] = (byte) 0x00;
+        
+        mBluetoothLeService.writeCharacteristic(rgbCharacteristic, msg);
+	}
+	
 	
 	public void setRgbBlinkColor(int red, int green, int blue, int millisecPeriod, int blinksNumber){
         BluetoothGattCharacteristic rgbCharacteristic = rgbFizzlyService.getCharacteristic(UIDD_RGB_COMMAND);
@@ -141,7 +159,7 @@ public class FizzlyDevice {
 		BluetoothGattCharacteristic beeperCharacteristic = beeperFizzlyService.getCharacteristic(UIDD_BEEPER_COMMAND);		
 		
 		if(tone != BEEPER_TONE_LOW && tone != BEEPER_TONE_HIGH){		
-			Log.e("FizzlyDevice","Wrong tone value. Must be 0x00 or 0x01");		
+			Log.e("FizzlyDevice","Wrong tone value. Must be 0x01 or 0x02");		
 			return;
 		}		
 		
